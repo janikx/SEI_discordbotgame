@@ -1,6 +1,27 @@
 import enum, random, sys
 from copy import deepcopy
 
+import os, discord
+from discord.ext import commands
+
+intents = discord.Intents.default()
+intents.messages = True
+
+DISCORD_TOKEN = os.getenv("MTE5OTc3MTMyNTgyNTI4NjE3NA.Gj10YZ.V6SjkPlUyPXGShL90Gh-jE2R2rcNnuFxfn9A4E")
+bot = commands.Bot(command_prefix="*", intents=intents)
+
+@bot.event
+async def on_ready():
+    print(f"{bot.user} has connected to Discord!")
+    
+@bot.event
+async def on_message(message):
+    if message.content == "test":
+        await message.channel.send("Testing 1 2 3")
+    await bot.process_commands(message)
+
+bot.run(DISCORD_TOKEN)
+
 # GAME MODES
 class GameMode(enum.IntEnum):
   adventure = 1
@@ -28,7 +49,7 @@ class Entity():
 
         other.hp -= damage
 
-        return (self.attack, other.hp <= 0) #(damage, fatal)
+        return (self.attack, other.hp <= 0) # fatal dmg
 
 class Character(Entity):
    

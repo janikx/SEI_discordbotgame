@@ -1,65 +1,6 @@
 import enum, random, sys
 from copy import deepcopy
 
-# BASIC CLASSES
-class Entity():
-  
-    def __init__(self, name, hp, maxhp, atk, defense, xp, gold):
-        self.name = name
-        self.hp = hp
-        self.maxhp = maxhp
-        self.attack = atk
-        self.defense = defense
-        self.xp = xp
-        self.gold = gold
-
-    def fight(self, other): # NEDOKONCENE
-        defense = min(other.defense, 19)
-        chancetohit = random.randint(0, 20-defense)
-        if chancetohit:
-            damage = self.attack
-        else:
-            damage = 0
-        other.hp -= damage
-        return (self.attack, other.hp <= 0) # fatal dmg
-
-class Character(Entity):
-   
-    def __init__(self, name, hp, maxhp, atk, defense, ch, chn, level, xp, gold, inventory, mode, user_id):
-        super().__init__(name, hp, maxhp, atk, defense, xp, gold)
-        self.chakra = ch
-        self.level = level
-        self.chakranature = chn
-
-        self.inventory = inventory
-
-        self.mode = mode
-        self.user_id = user_id
-
-class Enemy(Entity):
-
-    def __init__(self, name, maxhp, atk, defense, xp, gold):
-        super().__init__(name, maxhp, maxhp, atk, defense, xp, gold)
-
-# ENEMY CLASSES 
-class MagicalEnemy(Enemy):
-
-    def __init__(self, name, maxhp, atk, defense, xp, gold, magic):
-        super().__init__(name, maxhp, maxhp, atk, defense, xp, gold)
-        self.magic = magic
-
-class PhysicalEnemy(Enemy):
-
-    def __init__(self, name, maxhp, atk, defense, xp, gold):
-        super().__init__(name, maxhp, atk, defense, xp, gold)
-
-class BossEnemy(Enemy):
-
-    def __init__(self, name, maxhp, atk, defense, xp, gold, bonus):
-        super().__init__(name, maxhp, atk, defense, xp, gold)
-        self.bonus = bonus
-
-
 # DISCORD    
 import discord
 from discord.ext import commands

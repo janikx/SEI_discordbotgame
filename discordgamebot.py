@@ -12,6 +12,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import cooldown, BucketType
 from discord.ui.view import ViewStore
+from discord.components import Button, ButtonStyle
 
 DISCORD_TOKEN = ("MTE5OTc3MTMyNTgyNTI4NjE3NA.G8qfnM.gY7c03PU4xyBG03bmfuKJd9sWG-rYh-l-GZhiQ")
 bot = commands.Bot(command_prefix=".", intents= discord.Intents.all())
@@ -39,36 +40,6 @@ enemies = ["zombie", "skeleton", "spider", "corpse", "ghost", "vampire", "witch"
 animals = ["horse", "cat", "dog", "chicken", "duck", "pig", "wolf", "capybara", "eagle", "bear"]
 boss_enemies = ["titan", "dragon", "ancient robot", "serpent"]
 
-# .MINE .M .MN
-@bot.command(aliases = ["m", "mn"])
-@commands.cooldown(1, 600, commands.BucketType.user)
-async def mine(ctx):
-
-    mine_luck = [discord.Embed(description = f"{ctx.author.mention} mined in a cave for so long and found a *{random.choice(rare_mine_materials)}*!", color = 1752220), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for few minutes and returned with *{random.choice(mine_materials)}* and *{random.choice(mine_materials)}*.", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for few minutes and returned with *{random.choice(mine_materials)}* and *{random.choice(mine_materials)}*.", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for few minutes and returned with *{random.choice(mine_materials)}* and *{random.choice(mine_materials)}*.", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654)]
-    ### chance 1:15 for a rare
-
-    mine = random.choice(mine_luck)
-    await ctx.send(embed = mine)
-@mine.error
-async def mine(ctx, error):
-    if isinstance(error, commands.CommandOnCooldown):
-        em = discord.Embed(title = f"You are too tired to mine!", description = f"Try again in {error.retry_after:.2f}s.", color = 10038562)
-        await ctx.send(embed = em)
-
-# .CHOP .CH .C
-@bot.command(aliases = ["c", "ch"])
-@commands.cooldown(1, 60, commands.BucketType.user)
-async def chop(ctx):
-
-    chop_luck = [discord.Embed(description = f"{ctx.author.mention} choped trees until they found *{random.choice(rare_chop_materials)}* with their scratched hands!", color = 1752220), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped different trees and returned with *{random.choice(chop_materials)}* and *{random.choice(chop_materials)}*.", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped different trees and returned with *{random.choice(chop_materials)}* and *{random.choice(chop_materials)}*.", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped different trees and returned with *{random.choice(chop_materials)}* and *{random.choice(chop_materials)}*.", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped different trees and returned with *{random.choice(chop_materials)}* and *{random.choice(chop_materials)}*.", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654)]
-
-    chop = random.choice(chop_luck)
-    await ctx.send(embed = chop)
-@chop.error
-async def chop(ctx, error):
-    if isinstance(error, commands.CommandOnCooldown):
-        em = discord.Embed(title = f"You are too tired to chop trees!", description = f"Try again in {error.retry_after:.2f}s.", color = 10038562)
-        await ctx.send(embed = em)
 
 # .COOLDOWNS .CD
 @bot.command(aliases = ["cd", "cooldown"])
@@ -89,18 +60,18 @@ async def userinfo(ctx):
     await ctx.send(embed = embed)
 
 # MENU, SCREEN
-class Menu(discord.ui.View):
+class MenuWithButtons(discord.ui.View):
     def __init__(self):
-        super().__init__()
-        self.value = None
+        super.__init__()
+        self.add_item(discord.ui.Button(label="Chop"))
 
     @discord.ui.button(label="Chop", style=discord.ButtonStyle.blurple)
-    async def menu1(self, button: discord.ui.Button, interaction: discord.Interaction):
-        await interaction.response.send_message("You clicked me.")
+    async def chopbutton(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.send_message("Hiii")
 
 @bot.command()
-async def chopping(ctx):
-    view = Menu()
-    await ctx.reply(view=view)
+async def chop(ctx: commands.Context):
+    await ctx.send(f"{ctx.author.mention} u can do this :>", view=MenuWithButtons())
+
 
 bot.run(DISCORD_TOKEN)

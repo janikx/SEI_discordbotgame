@@ -1,3 +1,9 @@
+# WHAT TO DO:
+# • discord buttons => spravit okienko kde sa to bude hrat
+# • 
+# • 
+# • 
+
 import random
 from copy import deepcopy
 
@@ -5,6 +11,7 @@ from copy import deepcopy
 import discord
 from discord.ext import commands
 from discord.ext.commands import cooldown, BucketType
+from discord.ui.view import ViewStore
 
 DISCORD_TOKEN = ("MTE5OTc3MTMyNTgyNTI4NjE3NA.G8qfnM.gY7c03PU4xyBG03bmfuKJd9sWG-rYh-l-GZhiQ")
 bot = commands.Bot(command_prefix=".", intents= discord.Intents.all())
@@ -57,13 +64,11 @@ async def chop(ctx):
 
     chop = random.choice(chop_luck)
     await ctx.send(embed = chop)
-
 @chop.error
 async def chop(ctx, error):
     if isinstance(error, commands.CommandOnCooldown):
         em = discord.Embed(title = f"You are too tired to chop trees!", description = f"Try again in {error.retry_after:.2f}s.", color = 10038562)
         await ctx.send(embed = em)
-
 
 # .COOLDOWNS .CD
 @bot.command(aliases = ["cd", "cooldown"])
@@ -82,5 +87,20 @@ async def userinfo(ctx):
     # embed.set_thumbnail(url= ctx.author.author_url) ##### TO DO - neni .author_url
 
     await ctx.send(embed = embed)
+
+# MENU, SCREEN
+class Menu(discord.ui.View):
+    def __init__(self):
+        super().__init__()
+        self.value = None
+
+    @discord.ui.button(label="Chop", style=discord.ButtonStyle.blurple)
+    async def menu1(self, button: discord.ui.Button, interaction: discord.Interaction):
+        await interaction.response.send_message("You clicked me.")
+
+@bot.command()
+async def chopping(ctx):
+    view = Menu()
+    await ctx.reply(view=view)
 
 bot.run(DISCORD_TOKEN)

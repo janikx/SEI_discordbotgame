@@ -1,11 +1,16 @@
 # discord commands i made so far
-import discord
+
+import discord, random
 from discord.ext import commands
 from discord.ext.commands import cooldown, BucketType
 from discord.ui.view import ViewStore
 from discord.components import Button, ButtonStyle
 
 bot = commands.Bot(command_prefix=".", intents= discord.Intents.all())
+
+@bot.command()
+async def chop(ctx: commands.Context):
+    await ctx.send(f"{ctx.author.mention} u can do this :>", view=MenuButtons())
 
 # MINE
 mine_materials = ["stone", "rock", "diorite", "dirt", "iron", "coal", "copper", "granite", "chalk"]

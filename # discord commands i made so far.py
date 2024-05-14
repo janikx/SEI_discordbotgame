@@ -60,7 +60,20 @@ async def chop(ctx, error):
         em = discord.Embed(title = f"You are too tired to chop trees!", description = f"Try again in {error.retry_after:.2f}s.", color = 10038562)
         await ctx.send(embed = em)
 
-# .COOLDOWNS .CD
-@bot.command(aliases = ["cd", "cooldown"])
-async def cooldowns(ctx):
-    await ctx.send(embed = discord.Embed(title = f"Cooldowns", description = f":watch:Mine :watch:Chop :watch:Plant :watch:Hunt :watch:Boss", color = discord.Color.dark_gray()))
+    #    @chop.error
+    #     async def chop(ctx, error):
+    #         if isinstance(error, commands.CommandOnCooldown):
+    #             em = discord.Embed(title = f"You are too tired to chop trees!", description = f"Try again in {error.retry_after:.2f}s.", color = 10038562)
+    #             await ctx.send(embed = em)
+
+# .START
+@client.command(aliases = ["begin"])
+async def start(ctx, member:discord.Member= None):
+    if member == None:
+        member = ctx.message.author
+    em = discord.Embed(title= "Welcome to Charming RPG!", description= "Your adventure starts now. You can use .commands for a list of commands. Have fun!", color= discord.Color.pink(), timestamp= ctx.message.created_at)
+    em.set_thumbnail(url= member.avatar)
+    userstatus = "registered"
+    await ctx.send(embed = em)
+
+discord.Embed(description = f"{interaction.user.display_name} choped trees until they found *{random.choice(rare_chop_materials)}* with their scratched hands!", color = 1752220), discord.Embed(description = f"{interaction.user.display_name} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{interaction.user.display_name} choped different trees and returned with *{random.choice(chop_materials)}* and *{random.choice(chop_materials)}*.", color = 3426654)

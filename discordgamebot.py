@@ -3,45 +3,43 @@
 # • commands z papiera
 # • znamka: 1) ZA KOD 2) DOKUMENTACIA / PREZENTACIA - aku kniznicu sme pouzili, ako sme postupovali, skadial je co, co to robi, atd.
 
-import random
-from copy import deepcopy
+# list inv = [] z toho if x in inv tak potom equip else u dont have that item
+# alebo .equip potom vyber for i in range list vypis moznosti a choose from it
 
-# DISCORD    
-import discord
+# IMPORTS  
+import discord, random, datetime
 from discord.ext import commands
 from discord import app_commands
 from discord.ext.commands import cooldown, BucketType
 from discord.ui.view import ViewStore
 from discord.components import Button, ButtonStyle
 
-
 DISCORD_TOKEN = ("MTE5OTc3MTMyNTgyNTI4NjE3NA.G8qfnM.gY7c03PU4xyBG03bmfuKJd9sWG-rYh-l-GZhiQ")
-bot = commands.Bot(command_prefix=".", intents= discord.Intents.all())
+client = commands.Bot(command_prefix=".", intents= discord.Intents.all())
+userstatus = "unregistered" # USER STATUS
 
-@bot.event
+@client.event
 async def on_ready():
-    print(f"Bot has connected as {bot.user.name} :)")
-userstatus = "unregistered"
+    print(f"Bot has connected as {client.user.name} :)")
+    await client.tree.sync()
 
-# .START
-@bot.command(aliases = ["begin"])
-async def start(ctx, member:discord.Member= None):
-    if member == None:
-        member = ctx.message.author
-    em = discord.Embed(title= "Welcome to Charming RPG!", description= "Your adventure starts now. You can use .commands for a list of commands. Have fun!", color= discord.Color.pink(), timestamp= ctx.message.created_at)
-    em.set_thumbnail(url= member.avatar)
-    userstatus = "registered"
-    await ctx.send(embed = em)
+# START
+@client.tree.command(name="start", description="Use START to play the game.")
+async def start(interaction: discord.Interaction):
+    em = discord.Embed(title= "Welcome to Charming RPG!", description= "Your adventure starts now. You can use /COMMANDS for a list of commands. Have fun!", color= discord.Color.pink(), timestamp=datetime.datetime.utcnow())
+    em.set_thumbnail(url= interaction.user.avatar)
+    userstatus = "registered" # USER STATUS
+    await interaction.response.send_message(embed= em)
 
-# .HELP
-@bot.command()
-async def commands(ctx):
-    em=discord.Embed(title= "Charming RPG - Commands", description= "Here's the list of commands you can use!", color= 0x6803ab)
+# HELP
+@client.tree.command(name= "commands", description="Shows a list of all avaiable COMMANDS.")
+async def commands(interaction: discord.Interaction):
+    em= discord.Embed(title= "Charming RPG - Commands", description= f"{interaction.user.mention} here's the list of commands!", color= 0x6803ab)
     em.add_field(name="Info", value=".userinfo .inventory", inline=False)
     em.add_field(name="Action", value=".chop .fight .mine", inline=False)
     em.add_field(name="Shop", value=".shop .buy .sell", inline=False)
     em.add_field(name="Artifacts", value=".crate .equip .artifacts", inline=False)
-    await ctx.send(embed = em)
+    await interaction.response.send_message(embed= em, ephemeral= True)
 
 # LIST OF NEEDED VARIABLES
 
@@ -70,7 +68,7 @@ artifacts_quality = ["Broken", "Plain", "Iron", "Gold", "Diamond", "Magic", "Mys
 #     ATK = 
     
 # # .ARTIFACTINFO
-# @bot.command(aliases = ["ai", "arti"])
+# @client.command(aliases = ["ai", "arti"])
 # async def artifactinfo(ctx, artifact: None):
 #     em = discord.Embed(title="Currently equiped artifact", description=f"These are the stats of {current_artifact}.", color=0x6803ab)
 #     em.add_field(name="ATK", value= f"{ATK}", inline=True)
@@ -79,70 +77,62 @@ artifacts_quality = ["Broken", "Plain", "Iron", "Gold", "Diamond", "Magic", "Mys
 #     em.add_field(name="Quality", value= f"{current_artifact_quality}", inline=True)
 #     await ctx.send(embed = em)
 
-# .COOLDOWNS .CD
-@bot.command(aliases = ["cd", "cooldown"])
-async def cooldowns(ctx):
-    await ctx.send(embed = discord.Embed(title = f"Cooldowns", description = f":watch:Mine :watch:Chop :watch:Plant :watch:Hunt :watch:Boss", color = discord.Color.dark_gray()))
-
-# .USERINFO .UI
-@bot.command(aliases = ["ui", "user", "whois", "uinfo"])
-async def userinfo(ctx, member:discord.Member= None):
+# USERINFO
+@client.tree.command(name="userinfo", description="Shows information about any user.")
+async def userinfo(interaction: discord.Interaction, member: discord.Member= None):
     if member == None:
-        member = ctx.message.author
-    if userstatus == "registered":
-        em = discord.Embed(title= "User Info", description= f"Here is the user info for user {member.name}", color= discord.Color.pink(), timestamp= ctx.message.created_at)
-        em.set_thumbnail(url= member.avatar)
-        em.add_field(name= "ID", value= member.id)
-        em.add_field(name= "Name", value= member.name)
-        em.add_field(name= "Created At", value= member.created_at.strftime("%a, %B %#d, %Y, %I:%M %p"))
-        em.add_field(name= "Joined At", value= member.joined_at.strftime("%a, %B %#d, %Y, %I:%M %p"))
-        await ctx.send(embed = em)
-    else:
-        em = discord.Embed(title= "Unregistered!", description= "Please us command .start to use other commands. Thank you.", color= 10038562, timestamp= ctx.message.created_at)
-        await ctx.send(embed = em)
+        member = interaction.user
+    em = discord.Embed(title= "User Info", description= f"Here is the user info for user {member.name}", color= discord.Color.pink(), timestamp= datetime.datetime.utcnow())
+    em.set_thumbnail(url= member.avatar)
+    em.add_field(name= "ID", value= member.id)
+    em.add_field(name= "Name", value= member.name)
+    em.add_field(name= "Created At", value= member.created_at.strftime("%a, %B %#d, %Y, %I:%M %p"))
+    em.add_field(name= "Joined At", value= interaction.user.joined_at.strftime("%a, %B %#d, %Y, %I:%M %p"))
+    await interaction.response.send_message(embed= em)
 
-# .SHUTDOWN
-@bot.command(aliases = ["sd", "shut", "turnoff"])
-async def shutdown(ctx, value):
-    if value == "password":
-        await ctx.send("The bot shutted down successfuly.")
-        await bot.close()
-    else:
-        await ctx.send("You wrote the wrong password, try again.")
+# .PULL
+# @client.command(aliases = ["gacha", "roll"])
+# async def pull(ctx):
+#     quality = random.choice(artifacts_quality)
+#     artifact = random.choice(artifacts)
+#     em = discord.Embed(title= "Pulled Artifact", description= f"You have pulled *{quality} {artifact}*.", color= discord.Color.pink())
+#     await ctx.send(embed = em)
+# @pull.error
+# async def pull(ctx, error):
+#     if isinstance(error, commands.CommandOnCooldown):
+#         em = discord.Embed(title = f"You can only pull artifacts once in 24 hours!", description = f"Try again in {error.retry_after:.2f}s.", color = 10038562)
+#         await ctx.send(embed = em)
+
+# SHUTDOWN
+@client.tree.command(name="shutdown", description="Shuts down the bot.")
+async def shutdown(interaction: discord.Interaction):
+    await interaction.response.send_message(content="The bot shutted down successfuly.")
+    await client.close()
 
 # MENU, SCREEN
 class MenuButtons(discord.ui.View):
     def __init__(self):
-        super.__init__()
-        self.add_item(discord.ui.Button(label="Chop"))
-        self.add_item(discord.ui.Button(label="Mine"))
+        super().__init__(timeout = None)
 
     @discord.ui.button(label="Chop", style=discord.ButtonStyle.blurple)
-    async def chopbutton(self, interaction: discord.Interaction, button: discord.ui.Button):
-        async def chop(ctx):
-            chop_luck = [discord.Embed(description = f"{ctx.author.mention} choped trees until they found *{random.choice(rare_chop_materials)}* with their scratched hands!", color = 1752220), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped different trees and returned with *{random.choice(chop_materials)}* and *{random.choice(chop_materials)}*.", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped different trees and returned with *{random.choice(chop_materials)}* and *{random.choice(chop_materials)}*.", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped different trees and returned with *{random.choice(chop_materials)}* and *{random.choice(chop_materials)}*.", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped different trees and returned with *{random.choice(chop_materials)}* and *{random.choice(chop_materials)}*.", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654)]
-            chop = random.choice(chop_luck)
-            await ctx.send(embed = chop)
-        @chop.error
-        async def chop(ctx, error):
-            if isinstance(error, commands.CommandOnCooldown):
-                em = discord.Embed(title = f"You are too tired to chop trees!", description = f"Try again in {error.retry_after:.2f}s.", color = 10038562)
-                await ctx.send(embed = em)
+    async def chopbutton(self, interaction: discord.Interaction, Button: discord.ui.Button):
+            chop_luck = [discord.Embed(description = f"{interaction.user.mention} choped trees until they found **{random.choice(rare_chop_materials)}** with their scratched hands!", color = 1752220), discord.Embed(description = f"{interaction.user.mention} choped down the trees and gained **{random.choice(chop_materials)}.**", color = 3426654), discord.Embed(description = f"{interaction.user.mention} choped different trees and returned with **{random.choice(chop_materials)}** and **{random.choice(chop_materials)}**.", color = 3426654)]
+            chances_mine = [0.05, 0.65, 0.3]
+
+            chop = random.choices(chop_luck, chances_mine)[0]
+            await interaction.response.edit_message(embed= chop)
 
     @discord.ui.button(label="Mine", style=discord.ButtonStyle.blurple)
-    async def minebutton(self, interaction: discord.Interaction, button: discord.ui.Button):
-        @commands.cooldown(1, 600, commands.BucketType.user)
-        async def mine(ctx):
+    async def minebutton(self, interaction: discord.Interaction, Button: discord.ui.Button):
+            mine_luck = [discord.Embed(description = f"{interaction.user.mention} mined in a cave for so long and found a **{random.choice(rare_mine_materials)}**!", color = 3426654), discord.Embed(description = f"{interaction.user.mention} mined in a cave for a while and found **{random.choice(mine_materials)}.**", color = 3426654), discord.Embed(description = f"{interaction.user.mention} mined in a cave for few minutes and returned with **{random.choice(mine_materials)}** and **{random.choice(mine_materials)}**.", color = 3426654)]
+            chances_chop = [0.05, 0.65, 0.3]
 
-            mine_luck = [discord.Embed(description = f"{ctx.author.mention} mined in a cave for so long and found a *{random.choice(rare_mine_materials)}*!", color = 1752220), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for few minutes and returned with *{random.choice(mine_materials)}* and *{random.choice(mine_materials)}*.", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for few minutes and returned with *{random.choice(mine_materials)}* and *{random.choice(mine_materials)}*.", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for few minutes and returned with *{random.choice(mine_materials)}* and *{random.choice(mine_materials)}*.", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654), discord.Embed(description = f"{ctx.author.mention} mined in a cave for a while and found *{random.choice(mine_materials)}.*", color = 3426654)]
-            # chance 1:15 for a rare
+            mine = random.choices(mine_luck, chances_chop)[0]
+            await interaction.response.edit_message(embed= mine)
 
-            mine = random.choice(mine_luck)
-            await ctx.send(embed = mine)
-        @mine.error
-        async def mine(ctx, error):
-            if isinstance(error, commands.CommandOnCooldown):
-                em = discord.Embed(title = f"You are too tired to mine!", description = f"Try again in {error.retry_after:.2f}s.", color = 10038562)
-                await ctx.send(embed = em)
+@client.tree.command(name= "action", description= "Menu to do perform an ACTION")
+async def actionmenu(interaction: discord.Interaction):
+    em = discord.Embed(description= "What action do you want to make?", color = 1146986)
+    await interaction.response.send_message(embed= em, view= MenuButtons())
 
-bot.run(DISCORD_TOKEN)
+client.run(DISCORD_TOKEN)

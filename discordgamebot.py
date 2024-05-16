@@ -3,8 +3,12 @@
 # • commands z papiera
 # • znamka: 1) ZA KOD 2) DOKUMENTACIA / PREZENTACIA - aku kniznicu sme pouzili, ako sme postupovali, skadial je co, co to robi, atd.
 
-# list inv = [] z toho if x in inv tak potom equip, else u dont have that item
-# alebo .equip potom vyber for i in range list vypis moznosti a choose from it
+# list inv = [] z toho if x in inv, potom equip, else = u dont have that item
+# alebo .equip potom vyber for i in range list vypis moznosti a vyber si z toho artefakt
+
+# spravim class USER, potom spravim tam atributy, potom artefakt atributy, potom vytvorim USERA a jeho full atk (scitanie) atd., potom if artifact quality = gold atd. tak podla toho priradim artifact atk bonus atd.
+
+# equip artefaktu = vymazat list a potom dosadit novy artefakt
 
 # IMPORTS  
 import discord, random, datetime
@@ -21,20 +25,20 @@ class User:
     ATK: int
     HP: int
     Magic: int
-    CurArtifact: str
-    CurArtifactQuality: str
-    
-    userstatus = "unregistered" # USER STATUS
+    registered: bool
 
-    def __init__(self, atk, hp, magic, cur_artifact, cur_artifact_quality):
+    def __init__(self, atk, hp, magic, registered):
         self.ATK = atk
         self.HP = hp
         self.Magic = magic
-        self.CurArtifact = cur_artifact
-        self.CurArtifactQuality = cur_artifact_quality
+        self.registered = registered
 
-# USER INVENTORY
+# USER
+user = User(10, 30, 1, True)
+
+# USER INVENTORY AND ARTIFACTS
 inventory = []
+artifacts_inv = []
 
 @client.event
 async def on_ready():
@@ -46,7 +50,7 @@ async def on_ready():
 async def start(interaction: discord.Interaction):
     em = discord.Embed(title= "Welcome to Charming RPG!", description= "Your adventure starts now. You can use /COMMANDS for a list of commands. Have fun!", color= discord.Color.pink(), timestamp=datetime.datetime.utcnow())
     em.set_thumbnail(url= interaction.user.avatar)
-    userstatus = "registered" # USER STATUS
+    registered = True
     await interaction.response.send_message(embed= em)
 
 # HELP
@@ -87,7 +91,7 @@ artifacts_quality = ["Broken", "Plain", "Iron", "Gold", "Diamond", "Magic", "Mys
 #     ATK = 
     
 # ARTIFACTS
-# @client.command(name= "artifacts", description= "Shows artifact MENU.")
+# @client.tree.command(name= "artifacts", description= "Menu to show artifacts.")
 # async def artifacts(interaction: discord.Interaction):
 #     em = discord.Embed(title="Currently equiped artifact", description=f"These are the stats of {current_artifact}.", color=0x6803ab)
 #     em.add_field(name="ATK", value= f"{ATK}", inline=True)
@@ -110,17 +114,12 @@ async def userinfo(interaction: discord.Interaction, member: discord.Member= Non
     await interaction.response.send_message(embed= em)
 
 # .PULL
-# @client.command(aliases = ["gacha", "roll"])
-# async def pull(ctx):
+# @client.tree.command(name= "pull", description= "Pulls an artifact once in 24h.")
+# async def pull(interaction: discord.Interaction):
 #     quality = random.choice(artifacts_quality)
 #     artifact = random.choice(artifacts)
 #     em = discord.Embed(title= "Pulled Artifact", description= f"You have pulled *{quality} {artifact}*.", color= discord.Color.pink())
-#     await ctx.send(embed = em)
-# @pull.error
-# async def pull(ctx, error):
-#     if isinstance(error, commands.CommandOnCooldown):
-#         em = discord.Embed(title = f"You can only pull artifacts once in 24 hours!", description = f"Try again in {error.retry_after:.2f}s.", color = 10038562)
-#         await ctx.send(embed = em)
+#     await interaction.response.send_message(embed= em)
 
 # SHUTDOWN
 @client.tree.command(name="shutdown", description="Shuts down the bot.")
@@ -135,11 +134,25 @@ class MenuButtons(discord.ui.View):
 
     @discord.ui.button(label="Chop", style=discord.ButtonStyle.blurple)
     async def chopbutton(self, interaction: discord.Interaction, Button: discord.ui.Button):
-            chop_luck = [discord.Embed(description = f"{interaction.user.mention} choped trees until they found **{random.choice(rare_chop_materials)}** with their scratched hands!", color = 1752220), discord.Embed(description = f"{interaction.user.mention} choped down the trees and gained **{random.choice(chop_materials)}.**", color = 3426654), discord.Embed(description = f"{interaction.user.mention} choped different trees and returned with **{random.choice(chop_materials)}** and **{random.choice(chop_materials)}**.", color = 3426654)]
+            
+            choprare = random.choice(rare_chop_materials)
+            chop1 = random.choice(chop_materials)
+            chop2 = random.choice(chop_materials)
+
+            chop_luck = [discord.Embed(description = f"{interaction.user.mention} choped trees until they found **{choprare}** with their scratched hands!", color = 1752220), discord.Embed(description = f"{interaction.user.mention} choped down the trees and gained **{chop1}.**", color = 3426654), discord.Embed(description = f"{interaction.user.mention} choped different trees and returned with **{chop1}** and **{chop2}**.", color = 3426654)]
             chances_mine = [0.05, 0.65, 0.3]
 
             chop = random.choices(chop_luck, chances_mine)[0]
             await interaction.response.edit_message(embed= chop)
+            
+            if chop1 not in inventory:
+                inventory.append(chop1)
+            
+            if chop2 not in inventory:
+                inventory.append(chop2)
+            
+            if choprare not in inventory:
+                inventory.append(choprare) 
 
     @discord.ui.button(label= "Mine", style= discord.ButtonStyle.blurple)
     async def minebutton(self, interaction: discord.Interaction, Button: discord.ui.Button):

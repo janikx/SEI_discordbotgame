@@ -17,6 +17,7 @@ from discord import app_commands
 from discord.ext.commands import cooldown, BucketType
 from discord.ui.view import ViewStore
 from discord.components import Button, ButtonStyle
+from collections import Counter
 
 DISCORD_TOKEN = ("MTE5OTc3MTMyNTgyNTI4NjE3NA.G8qfnM.gY7c03PU4xyBG03bmfuKJd9sWG-rYh-l-GZhiQ")
 client = commands.Bot(command_prefix=".", intents= discord.Intents.all())
@@ -37,7 +38,8 @@ class User:
 user = User(10, 30, 1, True)
 
 # USER INVENTORY AND ARTIFACTS
-inventory = []
+money = 0
+xp = 0
 artifacts_inv = []
 
 @client.event
@@ -100,6 +102,20 @@ artifacts_quality = ["Broken", "Plain", "Iron", "Gold", "Diamond", "Magic", "Mys
 #     em.add_field(name="Quality", value= f"{current_artifact_quality}", inline=True)
 #     await interaction.response.send_message(embed= em)
 
+# INVENTORY
+inventory_items = []
+
+@client.tree.command(name= "inventory", description= "Shows inventory of a player.")
+async def inventory(interaction: discord.Interaction):
+    if len(inventory_items) == 0:
+        em = discord.Embed(title= "Your inventory", description= "Your inventory is empty.", color = 1146986)
+        await interaction.response.send_message(embed= em)
+    else:
+        counter = Counter(inventory_items)
+        inventory_dictionary = dict(counter)
+        em = discord.Embed(title= "Your inventory", description= '\n'.join([f"{item}: {count}" for item, count in counter.items()]), color = 1146986)
+        await interaction.response.send_message(embed= em)
+
 # USERINFO
 @client.tree.command(name="userinfo", description="Shows information about any user.")
 async def userinfo(interaction: discord.Interaction, member: discord.Member= None):
@@ -138,29 +154,45 @@ class MenuButtons(discord.ui.View):
             choprare = random.choice(rare_chop_materials)
             chop1 = random.choice(chop_materials)
             chop2 = random.choice(chop_materials)
+            while chop2 == chop1:
+                chop2 = random.choice(chop_materials)
 
             chop_luck = [discord.Embed(description = f"{interaction.user.mention} choped trees until they found **{choprare}** with their scratched hands!", color = 1752220), discord.Embed(description = f"{interaction.user.mention} choped down the trees and gained **{chop1}.**", color = 3426654), discord.Embed(description = f"{interaction.user.mention} choped different trees and returned with **{chop1}** and **{chop2}**.", color = 3426654)]
             chances_mine = [0.05, 0.65, 0.3]
 
-            chop = random.choices(chop_luck, chances_mine)[0]
-            await interaction.response.edit_message(embed= chop)
+            em = random.choices(chop_luck, chances_mine)[0]
+            await interaction.response.edit_message(embed= em)
             
-            if chop1 not in inventory:
-                inventory.append(chop1)
-            
-            if chop2 not in inventory:
-                inventory.append(chop2)
-            
-            if choprare not in inventory:
-                inventory.append(choprare) 
+            if em == discord.Embed(description = f"{interaction.user.mention} choped trees until they found **{choprare}** with their scratched hands!", color = 1752220) :
+                inventory_items.append(choprare)
+            if em == discord.Embed(description = f"{interaction.user.mention} choped down the trees and gained **{chop1}.**", color = 3426654):
+                inventory_items.append(chop1)
+            if em == discord.Embed(description = f"{interaction.user.mention} choped different trees and returned with **{chop1}** and **{chop2}**.", color = 3426654):
+                inventory_items.append(chop1)
+                inventory_items.append(chop2)
 
     @discord.ui.button(label= "Mine", style= discord.ButtonStyle.blurple)
     async def minebutton(self, interaction: discord.Interaction, Button: discord.ui.Button):
-            mine_luck = [discord.Embed(description = f"{interaction.user.mention} mined in a cave for so long and found a **{random.choice(rare_mine_materials)}**!", color = 3426654), discord.Embed(description = f"{interaction.user.mention} mined in a cave for a while and found **{random.choice(mine_materials)}.**", color = 3426654), discord.Embed(description = f"{interaction.user.mention} mined in a cave for few minutes and returned with **{random.choice(mine_materials)}** and **{random.choice(mine_materials)}**.", color = 3426654)]
+            
+            minerare = random.choice(rare_mine_materials)
+            mine1 = random.choice(mine_materials)
+            mine2 = random.choice(mine_materials)
+            while mine2 == mine1:
+                mine2 = random.choice(mine_materials)
+
+            mine_luck = [discord.Embed(description = f"{interaction.user.mention} mined in a cave for so long and found a **{minerare}**!", color = 3426654), discord.Embed(description = f"{interaction.user.mention} mined in a cave for a while and found **{mine1}.**", color = 3426654), discord.Embed(description = f"{interaction.user.mention} mined in a cave for few minutes and returned with **{mine1}** and **{mine2}**.", color = 3426654)]
             chances_chop = [0.05, 0.65, 0.3]
 
-            mine = random.choices(mine_luck, chances_chop)[0]
-            await interaction.response.edit_message(embed= mine)
+            em = random.choices(mine_luck, chances_chop)[0]
+            await interaction.response.edit_message(embed= em)
+
+            if em == discord.Embed(description = f"{interaction.user.mention} mined in a cave for so long and found a **{minerare}**!", color = 3426654):
+                inventory_items.append(minerare)
+            if em == discord.Embed(description = f"{interaction.user.mention} mined in a cave for a while and found **{mine1}.**", color = 3426654):
+                inventory_items.append(mine1)
+            if em == discord.Embed(description = f"{interaction.user.mention} mined in a cave for few minutes and returned with **{mine1}** and **{mine2}**.", color = 3426654):
+                inventory_items.append(mine1)
+                inventory_items.append(mine2)
 
     @discord.ui.button(label= "Hunt", style= discord.ButtonStyle.blurple)
     async def huntbutton(self, interaction: discord.Interaction, Button: discord.ui.Button):

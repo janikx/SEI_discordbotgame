@@ -77,3 +77,21 @@ async def start(ctx, member:discord.Member= None):
     await ctx.send(embed = em)
 
 discord.Embed(description = f"{interaction.user.display_name} choped trees until they found *{random.choice(rare_chop_materials)}* with their scratched hands!", color = 1752220), discord.Embed(description = f"{interaction.user.display_name} choped down the trees and gained *{random.choice(chop_materials)}.*", color = 3426654), discord.Embed(description = f"{interaction.user.display_name} choped different trees and returned with *{random.choice(chop_materials)}* and *{random.choice(chop_materials)}*.", color = 3426654)
+em.add_field(name= "Created At", value= member.created_at.strftime("%a, %B %#d, %Y, %I:%M %p"))
+
+
+hunt_luck = [discord.Embed(description = f"{interaction.user.mention} hunted monsters, lost {total_damage} HP and killed **{hunt1}**!", color = 3426654), discord.Embed(description = f"{interaction.user.mention} was attacked by **{hunt2} lost {total_damage} HP but got out of the fight alive.**", color = 3426654), discord.Embed(description = f"{interaction.user.mention} found **{hunt1}** and **{hunt2}** lost {total_damage} HP but killed them.", color = 3426654)]
+            chances_hunt = [0.4, 0.3, 0.3]
+
+            if em == discord.Embed(description = f"{interaction.user.mention} hunted monsters, lost {total_damage} HP and killed **{hunt1}**!", color = 3426654):
+                player.HP = player.HP - total_damage
+            elif em == discord.Embed(description = f"{interaction.user.mention} was attacked by **{hunt2} lost {total_damage} HP but got out of the fight alive.**", color = 3426654):
+                player.HP = player.HP - total_damage
+            elif em == discord.Embed(description = f"{interaction.user.mention} found **{hunt1}** and **{hunt2}** lost {total_damage} HP but killed them.", color = 3426654):
+                player.HP = player.HP - total_damage
+
+            if player.HP <= 0:
+                em = hunt_luck + "You died!"random.choices(hunt_luck, chances_hunt)[0]
+
+            em = hunt_em
+            await interaction.response.edit_message(embed= em)

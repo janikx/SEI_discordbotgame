@@ -77,6 +77,16 @@ class Pet:
 player = User(30, 30, 10, 0, 1, 0, 50, True, "no title", 1, 1)
 pet = Pet("Cat", "cat", 550, 100)
 
+# START
+@client.tree.command(name="start", description="Use START to play the game.")
+async def start(interaction: discord.Interaction):
+    em = discord.Embed(title= "Welcome to Charming RPG!", description= "Your adventure starts now. You can use /COMMANDS for a list of commands. Have fun!", color= pink, timestamp=datetime.datetime.utcnow())
+    em.set_thumbnail(url= interaction.user.avatar)
+    player.registered = True
+    joined_the_game_time = datetime.datetime.utcnow()
+    await interaction.response.send_message(embed= em)
+    return joined_the_game_time
+
 chicken = Pet("Chicken", "chicken", 300, 100)
 duck = Pet("Duck", "duck", 350, 100)
 pig = Pet("Pig", "pig", 450, 100)
@@ -122,16 +132,6 @@ def LevelUpChecker():
 async def on_ready():
     print(f"Bot has connected as {client.user.name} :)")
     await client.tree.sync()
-
-# START
-@client.tree.command(name="start", description="Use START to play the game.")
-async def start(interaction: discord.Interaction):
-    em = discord.Embed(title= "Welcome to Charming RPG!", description= "Your adventure starts now. You can use /COMMANDS for a list of commands. Have fun!", color= discord.Color.pink(), timestamp=datetime.datetime.utcnow())
-    em.set_thumbnail(url= interaction.user.avatar)
-    player.registered = True
-    joined_the_game_time = datetime.datetime.utcnow()
-    await interaction.response.send_message(embed= em)
-    return joined_the_game_time
 
 # HELP
 @client.tree.command(name= "commands", description="Shows a list of all avaiable COMMANDS.")
@@ -194,10 +194,11 @@ async def inventory(interaction: discord.Interaction):
 async def userinfo(interaction: discord.Interaction, member: discord.Member= None):
     if member == None:
         member = interaction.user
-    em = discord.Embed(title= "User Info", description= f"Here is the user info for user {member.name} :bust_in_silhouette:", color= discord.Color.pink(), timestamp= datetime.datetime.utcnow())
+    em = discord.Embed(title= "User Info", description= f":bust_in_silhouette: Here is the user info for user {member.name}", color= discord.Color.pink(), timestamp= datetime.datetime.utcnow())
     em.set_thumbnail(url= member.avatar)
-    em.add_field(name= "Info :mag:", value= f"Name: **{interaction.user.mention}**\nTitle: **{player.Title}**\nID: *{member.id}*")
+    em.add_field(name= "Info :mag:", value= f"- Name: **{member.mention}**\n- Title: **{player.Title}**\nID: *{member.id}*", inline= False)
     em.add_field(name= "Game status :video_game:", value= f":hearts: HP: **{player.HP}/{player.MaxHP}**\n:money_with_wings: Balance: **{player.Money}$**\n:chart_with_upwards_trend: Level: **{player.Lvl}**\nXP: **{player.XP} / {player.LvlUpXP} xp**")
+    em.add_field(name= "Cooldowns :stopwatch:", value= f":axe: Chop:\n:pick: Mine:\n:archery: Hunt:\n:sunflower: Daily:\n:rose: Weekly:")
     if pet.Type == "-":
         pet_type = f"{pet.Type}"
     else:
@@ -210,11 +211,10 @@ async def userinfo(interaction: discord.Interaction, member: discord.Member= Non
 async def shutdown(interaction: discord.Interaction):
     ListOfAdmins = [532640698114113556]
     if interaction.user.id in ListOfAdmins:# (my ID, no one except me can use this)
-        await interaction.response.send_message(content= f"*The **{client.user.name}** shutted down successfuly.*", ephemeral= True)
+        await interaction.response.send_message(content= f"*The **{client.user.name}** shutted down successfully.*", ephemeral= True)
         await client.close()
     else:
-        await interaction.response.send_message(content= f"*You do not have a permission to use this.*", ephemeral= True)
-        
+        await interaction.response.send_message(content= f"*You do not have a permission to use this.*", ephemeral= True)   
 
 # ACTIONMENU
 class ActionMenu(discord.ui.View):
@@ -384,8 +384,20 @@ class ShopMenu(discord.ui.View):
     @discord.ui.button(label= "Pets", style=discord.ButtonStyle.green)
     async def petbuybutton(self, interaction: discord.Interaction, Button: discord.ui.Button):
 
-        em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Pets :paw_prints:**", description=f"{interaction.user.mention} here is the offer:\n \n- :{chicken.Type}: *{chicken.Name}* - **{chicken.Price}$**\n- :{duck.Type}: *{duck.Name}* - **{duck.Price}$**\n- :{pig.Type}: *{pig.Name}* - **{pig.Price}$**\n- :{rabbit.Type}: *{rabbit.Name}* - **{rabbit.Price}$**\n- :{dog.Type}: *{dog.Name}* - **{dog.Price}$**\n- :{cat.Type}: *{cat.Name}* - **{cat.Price}$**\n- :{horse.Type}: *{horse.Name}* - **{horse.Price}$**\n- :{wolf.Type}: *{wolf.Name}* - **{wolf.Price}$**\n- :{octopus.Type}: *{octopus.Name}* - **{octopus.Price}$**\n- :{eagle.Type}: *{eagle.Name}* - **{eagle.Price}$**\n- :{snake.Type}: *{snake.Name}* - **{snake.Price}$**\n- :{shark.Type}: *{shark.Name}* - **{shark.Price}$**\n- :{bear.Type}: *{bear.Name}* - **{bear.Price}$**\n- :{lion.Type}: *{lion.Name}* - **{lion.Price}$**\n- :{mini_dragon.Type}: *{mini_dragon.Name}* - **{mini_dragon.Price}$**\n- :{unicorn.Type}: *{unicorn.Name}* - **{unicorn.Price}$**\n \nYour balance: **{player.Money}$**", color=15277667)
+        em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Pets :paw_prints:**", description=f"{interaction.user.mention} here is the offer:\n \n- :{chicken.Type}: *{chicken.Name}* - **{chicken.Price}$**\n- :{duck.Type}: *{duck.Name}* - **{duck.Price}$**\n- :{pig.Type}: *{pig.Name}* - **{pig.Price}$**\n- :{rabbit.Type}: *{rabbit.Name}* - **{rabbit.Price}$**\n- :{dog.Type}: *{dog.Name}* - **{dog.Price}$**\n- :{cat.Type}: *{cat.Name}* - **{cat.Price}$**\n- :{horse.Type}: *{horse.Name}* - **{horse.Price}$**\n- :{wolf.Type}: *{wolf.Name}* - **{wolf.Price}$**\n- :{octopus.Type}: *{octopus.Name}* - **{octopus.Price}$**\n- :{eagle.Type}: *{eagle.Name}* - **{eagle.Price}$**\n- :{snake.Type}: *{snake.Name}* - **{snake.Price}$**\n- :{shark.Type}: *{shark.Name}* - **{shark.Price}$**\n- :{bear.Type}: *{bear.Name}* - **{bear.Price}$**\n- :{lion.Type}: *{lion.Name}* - **{lion.Price}$**\n- :{mini_dragon.Type}: *{mini_dragon.Name}* - **{mini_dragon.Price}$**\n- :{unicorn.Type}: *{unicorn.Name}* - **{unicorn.Price}$**\n \nYour balance: **{player.Money}$**\n **WARNING**, if you buy a pet your current pet will be automatically sold :warning:", color=15277667)
         await interaction.response.edit_message(embed= em)
+
+        # if # user bought pet:
+        # @client.command(name= "happinessdecrease")
+        # async def happinessdecrease(ctx):
+        #     if pet.Happiness < 100:
+        #         pet.Happiness -= 1
+        #     if pet.Happiness <= 0:
+        #         pet.Happiness = 0
+        #     client.loop.create_task(repeat_task(ctx))
+        # async def repeat_task(ctx):
+        #     while True:
+        #         await asyncio.sleep(180)
 
     @discord.ui.button(label= "Potions", style=discord.ButtonStyle.green)
     async def potionbuybutton(self, interaction: discord.Interaction, Button: discord.ui.Button):

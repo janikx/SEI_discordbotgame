@@ -104,6 +104,12 @@ lion = Pet("Lion", "lion", 1500, 100)
 mini_dragon = Pet("Mini Dragon", "dragon_face", 2200, 100)
 unicorn = Pet("Unicorn", "unicorn", 3800, 100)
 
+def FormatTime(seconds):
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    seconds = int(seconds % 60)
+    return f"{hours}h {minutes}m {seconds}s"
+
 # LEVEL UP FUNC
 def LevelUpChecker():
     if player.XP >= player.LvlUpXP:
@@ -376,6 +382,13 @@ async def actionmenu(interaction: discord.Interaction):
     em = discord.Embed(title= "Action", description= f"{interaction.user.mention}, what action do you want to make?", color = 3447003)
     await interaction.response.send_message(embed= em, view= ActionMenu())
 
+@app_commands.checks.cooldown(1, 5.0)
+@actionmenu.error
+async def actionmenu_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
+    retry_after = FormatTime(error.retry_after)
+    em = discord.Embed(title= "Action", description= f"{interaction.user.mention}, you cannot use this command right now. Try again in {retry_after}", color = red)
+    await interaction.response.edit_message(embed= em, ephemeral= True)
+
 # SHOPMENU - titles, pets, potions(healing, bonus gold, bonus xp, bonus atk when boss fight)
 class ShopMenu(discord.ui.View):
     def __init__(self):
@@ -428,7 +441,7 @@ class PetMenu(discord.ui.View):
         super().__init__(timeout = None)
 
     @discord.ui.button(label= "Change name", style=discord.ButtonStyle.blurple)
-    async def namebutton(self, interaction: discord.Interaction, Button: discord.ui.Button):
+    async def petnamebutton(self, interaction: discord.Interaction, Button: discord.ui.Button):
         class NameButtonMenu(discord.ui.View):
             def __init__(self):
                 super().__init__(timeout = None)
@@ -439,17 +452,17 @@ class PetMenu(discord.ui.View):
                     em = discord.Embed(title= "Pet name change", description= f"{interaction.user.mention}, you cannot change a name of an non-existend pet. Buy one in **:shopping_cart: CHARMING SHOP :sparkles:**", color= 15548997)
                     await interaction.response.edit_message(embed= em, view=None)
                 else:
-                    em = discord.Embed(title= "Pet name change", description= f"{interaction.user.mention}, type a name which you want your pet to be called. Answer within 60 seconds.", color= 15844367)
+                    em = discord.Embed(title= "Pet name change", description= f"{interaction.user.mention}, type a name which you want your pet to be called. Answer within 60 seconds.\n*Note: The name of your pet can be only changed three times in 24 hours.*", color= 15844367)
                     await interaction.response.edit_message(embed= em, view=None)
                     def check_message(m):
                         return m.author == interaction.user and m.channel == interaction.channel
                     try:
                         msg = await client.wait_for("message", check=check_message, timeout=60.0)
                         pet.Name = msg.content
-                        em = discord.Embed(title="Pet name changed!", description=f"{interaction.user.mention}'s pet is now named **:{pet.Type}: {pet.Name}**.", color= 15844367)
+                        em = discord.Embed(title="Pet name changed!", description=f"{interaction.user.mention}'s pet is now named **:{pet.Type}: {pet.Name}**.", color= yellow)
                         await interaction.followup.send(embed= em)
                     except asyncio.TimeoutError:
-                        await interaction.followup.send(discord.Embed(title= "Pet name change", description= f"{interaction.user.mention} took too long to respond!", color= 15844367), ephemeral=True)
+                        await interaction.followup.send(discord.Embed(title= "Pet name change", description= f"{interaction.user.mention}, you took too long to respond!", color= 15844367), ephemeral=True)
 
             @discord.ui.button(label= "Cancel", style=discord.ButtonStyle.red)
             async def cancelbutton(self, interaction: discord.Interaction, button: discord.ui.Button):

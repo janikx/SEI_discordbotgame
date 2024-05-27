@@ -75,7 +75,7 @@ class Pet:
 
 # PLAYER AND PET
 player = User(30, 30, 10, 0, 1, 0, 50, True, "no title", 1, 1)
-pet = Pet("Cat", "cat", 550, 100)
+pet = Pet("Cat", "cat", 550, 20)
 
 # START
 @client.tree.command(name="start", description="Use START to play the game.")
@@ -396,21 +396,71 @@ class ShopMenu(discord.ui.View):
 
     @discord.ui.button(label= "Pets", style=discord.ButtonStyle.green)
     async def petbuybutton(self, interaction: discord.Interaction, Button: discord.ui.Button):
-
-        em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Pets :paw_prints:**", description=f"{interaction.user.mention} here is the offer:\n \n- :{chicken.Type}: *{chicken.Name}* - **{chicken.Price}$**\n- :{duck.Type}: *{duck.Name}* - **{duck.Price}$**\n- :{pig.Type}: *{pig.Name}* - **{pig.Price}$**\n- :{rabbit.Type}: *{rabbit.Name}* - **{rabbit.Price}$**\n- :{dog.Type}: *{dog.Name}* - **{dog.Price}$**\n- :{cat.Type}: *{cat.Name}* - **{cat.Price}$**\n- :{horse.Type}: *{horse.Name}* - **{horse.Price}$**\n- :{wolf.Type}: *{wolf.Name}* - **{wolf.Price}$**\n- :{octopus.Type}: *{octopus.Name}* - **{octopus.Price}$**\n- :{eagle.Type}: *{eagle.Name}* - **{eagle.Price}$**\n- :{snake.Type}: *{snake.Name}* - **{snake.Price}$**\n- :{shark.Type}: *{shark.Name}* - **{shark.Price}$**\n- :{bear.Type}: *{bear.Name}* - **{bear.Price}$**\n- :{lion.Type}: *{lion.Name}* - **{lion.Price}$**\n- :{mini_dragon.Type}: *{mini_dragon.Name}* - **{mini_dragon.Price}$**\n- :{unicorn.Type}: *{unicorn.Name}* - **{unicorn.Price}$**\n \nYour balance: **{player.Money}$**\n **WARNING**, if you buy a pet your current pet will be automatically sold :warning:", color=15277667)
+        em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Pets :paw_prints:**", description=f"{interaction.user.mention} here is the offer:\n \n- :{chicken.Type}: *{chicken.Name}* - **{chicken.Price}$**\n- :{duck.Type}: *{duck.Name}* - **{duck.Price}$**\n- :{pig.Type}: *{pig.Name}* - **{pig.Price}$**\n- :{rabbit.Type}: *{rabbit.Name}* - **{rabbit.Price}$**\n- :{dog.Type}: *{dog.Name}* - **{dog.Price}$**\n- :{cat.Type}: *{cat.Name}* - **{cat.Price}$**\n- :{horse.Type}: *{horse.Name}* - **{horse.Price}$**\n- :{wolf.Type}: *{wolf.Name}* - **{wolf.Price}$**\n- :{octopus.Type}: *{octopus.Name}* - **{octopus.Price}$**\n- :{eagle.Type}: *{eagle.Name}* - **{eagle.Price}$**\n- :{snake.Type}: *{snake.Name}* - **{snake.Price}$**\n- :{shark.Type}: *{shark.Name}* - **{shark.Price}$**\n- :{bear.Type}: *{bear.Name}* - **{bear.Price}$**\n- :{lion.Type}: *{lion.Name}* - **{lion.Price}$**\n- :{mini_dragon.Type}: *{mini_dragon.Name}* - **{mini_dragon.Price}$**\n- :{unicorn.Type}: *{unicorn.Name}* - **{unicorn.Price}$**\n \nYour balance: **{player.Money}$**\n:warning: To buy a pet type ***buy petname*** in chat\n**WARNING**, if you buy a pet your current pet will be automatically released to the wild :warning:", color=15277667)
         await interaction.response.edit_message(embed= em)
 
-        # if # user bought pet:
-        # @client.command(name= "happinessdecrease")
-        # async def happinessdecrease(ctx):
-        #     if pet.Happiness < 100:
-        #         pet.Happiness -= 1
-        #     if pet.Happiness <= 0:
-        #         pet.Happiness = 0
-        #     client.loop.create_task(repeat_task(ctx))
-        # async def repeat_task(ctx):
-        #     while True:
-        #         await asyncio.sleep(180)
+        def check_message(m):
+            return m.author == interaction.user and m.channel == interaction.channel
+        try:
+            msg = await client.wait_for("message", check=check_message, timeout= None)
+            petbuymsg = msg.content.lower()
+            if petbuymsg in ["buy chicken", "buy chick"]:
+                pet = chicken
+            elif petbuymsg == "buy duck":
+                pet = duck
+            elif petbuymsg == "buy pig":
+                pet = pig
+            elif petbuymsg in ["buy rabbit", "buy bunny"]:
+                pet = rabbit
+            elif petbuymsg in ["buy dog", "buy doggy", "buy puppy"]:
+                pet = dog
+            elif petbuymsg in ["buy cat", "buy kitty", "buy kitten"]:
+                pet = cat
+            elif petbuymsg in ["buy horse", "buy pony"]:
+                pet = horse
+            elif petbuymsg == "buy wolf":
+                pet = wolf
+            elif petbuymsg == "buy octopus":
+                pet = octopus
+            elif petbuymsg == "buy eagle":
+                pet = eagle
+            elif petbuymsg == "buy snake":
+                pet = snake
+            elif petbuymsg == "buy shark":
+                pet = shark
+            elif petbuymsg == "buy bear":
+                pet = bear
+            elif petbuymsg == "buy lion":
+                pet = lion
+            elif petbuymsg in ["buy dragon", "buy mini dragon"]:
+                pet = mini_dragon
+            elif petbuymsg == "buy unicorn":
+                pet = unicorn
+            else:
+                await interaction.followup.send("Invalid pet. Please try again.", ephemeral= True)
+                return
+            
+            if pet == pet:
+                class PetShopMenu(discord.ui.View):
+                    def __init__(self):
+                        super().__init__(timeout = None)
+
+                    @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
+                    async def confirmbutton(self, interaction: discord.Interaction, button: discord.ui.Button):
+                        em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Pets :paw_prints:**", description=f"{interaction.user.mention} bought their *cutie*, **:{pet.Type}: {pet.Name}.**", color= green)
+                        player.Money = int(player.Money - pet.Price)
+                        await interaction.response.edit_message(embed= em, view=None)
+
+                    @discord.ui.button(label= "Cancel", style=discord.ButtonStyle.red)
+                    async def cancelbutton(self, interaction: discord.Interaction, button: discord.ui.Button):
+                        em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Pets :paw_prints:**", description= f"{interaction.user.mention} did not buy a pet.", color= red)
+                        await interaction.response.edit_message(embed=em, view=None)
+
+                em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Pets :paw_prints:**", description= f"{interaction.user.mention}, are you sure you want to buy **:{pet.Type}: {pet.Name}**?", color= 15844367)
+                await interaction.followup.send(embed= em, view=PetShopMenu())
+
+        except asyncio.TimeoutError:
+            await interaction.followup.send(discord.Embed(title="**:shopping_cart: CHARMING SHOP - Pets :paw_prints:**", description= f"{interaction.user.mention} did not want to buy anything.", color= 15844367), ephemeral=True)
 
     @discord.ui.button(label= "Potions", style=discord.ButtonStyle.green)
     async def potionbuybutton(self, interaction: discord.Interaction, Button: discord.ui.Button):

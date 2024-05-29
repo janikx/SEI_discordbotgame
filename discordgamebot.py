@@ -152,7 +152,7 @@ async def commands(interaction: discord.Interaction):
 
 # LIST OF NEEDED VARIABLES
 # MINE
-mine_materials = [":rock: rock", ":: diorite", ":: dirt", ":: iron", ":: coal", ":: copper", ":: granite", ":: chalk"]
+mine_materials = ["<🪨1245417668534599790> rock", "<:diorite:1245418611099828224> diorite", "<:dirt:1245417662184689726> dirt", "<:iron:1245417676382404649> iron", "<:coal:1245417659512782970> coal", "<:copper:1245417677971918943> copper", "<:granite:1245419034128810005> granite", "<:chalk:1245417670136823848> chalk"]
 rare_mine_materials = [":gem: diamond"]
 
 # CHOP
@@ -401,9 +401,35 @@ class ShopMenu(discord.ui.View):
     def __init__(self):
         super().__init__(timeout = None)
 
-    @discord.ui.button(label= "Pets", style=discord.ButtonStyle.green)
+    @discord.ui.button(label= "Pets", style=discord.ButtonStyle.blurple)
     async def petbuybutton(self, interaction: discord.Interaction, Button: discord.ui.Button):
-        em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Pets :paw_prints:**", description=f"{interaction.user.mention} here is the offer:\n \n- :{chicken.Type}: *{chicken.Name}* - **{chicken.Price}$**\n- :{duck.Type}: *{duck.Name}* - **{duck.Price}$**\n- :{pig.Type}: *{pig.Name}* - **{pig.Price}$**\n- :{rabbit.Type}: *{rabbit.Name}* - **{rabbit.Price}$**\n- :{dog.Type}: *{dog.Name}* - **{dog.Price}$**\n- :{cat.Type}: *{cat.Name}* - **{cat.Price}$**\n- :{horse.Type}: *{horse.Name}* - **{horse.Price}$**\n- :{wolf.Type}: *{wolf.Name}* - **{wolf.Price}$**\n- :{octopus.Type}: *{octopus.Name}* - **{octopus.Price}$**\n- :{eagle.Type}: *{eagle.Name}* - **{eagle.Price}$**\n- :{snake.Type}: *{snake.Name}* - **{snake.Price}$**\n- :{shark.Type}: *{shark.Name}* - **{shark.Price}$**\n- :{bear.Type}: *{bear.Name}* - **{bear.Price}$**\n- :{lion.Type}: *{lion.Name}* - **{lion.Price}$**\n- :{mini_dragon.Type}: *{mini_dragon.Name}* - **{mini_dragon.Price}$**\n- :{unicorn.Type}: *{unicorn.Name}* - **{unicorn.Price}$**\n \nYour balance: **{player.Money}$**\n:warning: To buy a pet, type ***buy petname*** in chat\n**WARNING**, if you buy a pet your current pet will be automatically released to the wild :warning:", color=vividpink)
+        em = discord.Embed(
+    title="**:shopping_cart: CHARMING SHOP - Pets :paw_prints:**",
+    description=(
+        f"{interaction.user.mention} here is the offer:\n\n"
+        f"- :{chicken.Type}: *{chicken.Name}* - **{chicken.Price}$**\n"
+        f"- :{duck.Type}: *{duck.Name}* - **{duck.Price}$**\n"
+        f"- :{pig.Type}: *{pig.Name}* - **{pig.Price}$**\n"
+        f"- :{rabbit.Type}: *{rabbit.Name}* - **{rabbit.Price}$**\n"
+        f"- :{dog.Type}: *{dog.Name}* - **{dog.Price}$**\n"
+        f"- :{cat.Type}: *{cat.Name}* - **{cat.Price}$**\n"
+        f"- :{horse.Type}: *{horse.Name}* - **{horse.Price}$**\n"
+        f"- :{wolf.Type}: *{wolf.Name}* - **{wolf.Price}$**\n"
+        f"- :{octopus.Type}: *{octopus.Name}* - **{octopus.Price}$**\n"
+        f"- :{eagle.Type}: *{eagle.Name}* - **{eagle.Price}$**\n"
+        f"- :{snake.Type}: *{snake.Name}* - **{snake.Price}$**\n"
+        f"- :{shark.Type}: *{shark.Name}* - **{shark.Price}$**\n"
+        f"- :{bear.Type}: *{bear.Name}* - **{bear.Price}$**\n"
+        f"- :{lion.Type}: *{lion.Name}* - **{lion.Price}$**\n"
+        f"- :{mini_dragon.Type}: *{mini_dragon.Name}* - **{mini_dragon.Price}$**\n"
+        f"- :{unicorn.Type}: *{unicorn.Name}* - **{unicorn.Price}$**\n\n"
+        f"Your balance: **{player.Money}$**\n"
+        ":warning: To buy a pet, type ***buy petname*** in chat\n"
+        ":warning: If you buy a pet your current pet will be automatically released to the wild"
+    ),
+    color=vividpink
+)
+
         await interaction.response.edit_message(embed= em)
 
         def check_message(m):
@@ -476,9 +502,23 @@ class ShopMenu(discord.ui.View):
         except asyncio.TimeoutError:
             await interaction.followup.send(discord.Embed(title="**:shopping_cart: CHARMING SHOP - Pets :paw_prints:**", description= f"{interaction.user.mention} did not want to buy anything.", color= vividpink), ephemeral=True)
 
-    @discord.ui.button(label= "Potions", style=discord.ButtonStyle.green)
+    @discord.ui.button(label= "Potions", style=discord.ButtonStyle.blurple)
     async def potionbuybutton(self, interaction: discord.Interaction, Button: discord.ui.Button):
-        em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description=f"{interaction.user.mention} here is the offer:\n\n- :: healing potion\n- :: healing potion 10x\n- :: bonus xp potion\n- :: bonus xp potion 10x\n- :: bonus gold potion\n- :: bonus gold potion 10x\n \nYour balance: **{player.Money}$**\n:warning: To buy a potion, type ***buy potionname*** in chat", color=vividpink)
+        em = discord.Embed(
+    title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**",
+    description=(
+        f"{interaction.user.mention} here is the offer:\n\n"
+        "- <:healpotion:1245417680903733249> *healing potion* - **5$**\n"
+        "- <:healpotion:1245417680903733249> *healing potion* 10x - **40$**\n"
+        "- <:xppotion:1245417682199646290> *bonus xp potion* - **80$**\n"
+        "- <:xppotion:1245417682199646290> *bonus xp potion* 10x - **675$**\n"
+        "- <:goldpotion:1245417684661702730> *bonus gold potion* - **80$**\n"
+        "- <:goldpotion:1245417684661702730> *bonus gold potion* 10x - **675$**\n\n"
+        f"Your balance: **{player.Money}$**\n"
+        ":warning: To buy a potion, type ***buy potionname*** in chat"
+    ),
+    color=vividpink
+)
         await interaction.response.edit_message(embed= em)
 
         def check_message(m):
@@ -488,17 +528,17 @@ class ShopMenu(discord.ui.View):
             potionbuymsg = msg.content.lower()
             global inventory_items
             if potionbuymsg in ["buy healing", "buy healing potion", "buy heal potion"]:
-                potion = ":: healing potion"
+                potion = "<:healpotion:1245417680903733249> healing potion"
             elif potionbuymsg in ["buy healing 10", "buy healing potion 10", "buy heal potion 10", "buy healpotion 10", "buy healingpotion 10"]:
-                potion = ":: healing potion 10"
+                potion = "<:healpotion:1245417680903733249> healing potion 10"
             elif potionbuymsg in ["buy xp", "buy xp potion", "buy xppotion", "buy bonus xp", "buy bonusxp", "buy bonus xp potion", "buy bonusxppotion"]:
-                potion = ":: bonus xp potion"
+                potion = "<:xppotion:1245417682199646290> bonus xp potion"
             elif potionbuymsg in ["buy xp 10", "buy xp potion 10", "buy xppotion 10", "buy bonus xp 10", "buy bonusxp 10", "buy bonus xp potion 10", "buy bonusxppotion 10"]:
-                potion = ":: bonus xp potion 10"
+                potion = "<:xppotion:1245417682199646290> bonus xp potion 10"
             elif potionbuymsg in ["buy bonusgold", "buy bonus gold potion", "buy gold potion", "buy bonusgoldpotion", "buy bonusgold potion"]:
-                potion = ":: bonus gold potion"
+                potion = "<:goldpotion:1245417684661702730> bonus gold potion"
             elif potionbuymsg in ["buy bonusgold 10", "buy bonus gold potion 10", "buy gold potion 10", "buy bonusgold potion 10", "buy bonusgoldpotion 10"]:
-                potion = ":: bonus gold potion 10"
+                potion = "<:goldpotion:1245417684661702730> bonus gold potion 10"
 
             if player:
                 class PotionShopMenu(discord.ui.View):
@@ -511,9 +551,9 @@ class ShopMenu(discord.ui.View):
                         if potionbuymsg in ["buy healing", "buy healing potion", "buy heal potion"]:
                             healprice = 5
                             if player.Money >= healprice:
-                                inventory_items.append(":: heal potion")
+                                inventory_items.append("<:healpotion:1245417680903733249> heal potion")
                                 player.Money = int(player.Money - healprice)
-                                em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description=f"{interaction.user.mention} bought a **:: healing potion.**\n \nYour balance: **{player.Money}$**\n*— {healprice}$*", color= green)
+                                em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description=f"{interaction.user.mention} bought a **<:healpotion:1245417680903733249> healing potion.**\n \nYour balance: **{player.Money}$**\n*— {healprice}$*", color= green)
                                 await interaction.response.edit_message(embed= em, view=None)
                             else:
                                 moneyshort = int(healprice - player.Money)
@@ -523,9 +563,9 @@ class ShopMenu(discord.ui.View):
                             tenhealprice = 40
                             if player.Money >= tenhealprice:
                                 for _ in range(10):
-                                    inventory_items.append(":: heal potion")
+                                    inventory_items.append("<:healpotion:1245417680903733249> heal potion")
                                 player.Money = int(player.Money - tenhealprice)
-                                em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description=f"{interaction.user.mention} bought 10 **:: healing potions.**\n \nYour balance: **{player.Money}$**\n*— {tenhealprice}$*", color= green)
+                                em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description=f"{interaction.user.mention} bought 10 **<:healpotion:1245417680903733249> healing potions.**\n \nYour balance: **{player.Money}$**\n*— {tenhealprice}$*", color= green)
                                 await interaction.response.edit_message(embed= em, view=None)
                             else:
                                 moneyshort = int(tenhealprice - player.Money)
@@ -534,9 +574,9 @@ class ShopMenu(discord.ui.View):
                         elif potionbuymsg in ["buy xp", "buy xp potion", "buy xppotion", "buy bonus xp", "buy bonusxp", "buy bonus xp potion", "buy bonusxppotion"]:
                             xpprice = 80
                             if player.Money >= xpprice:
-                                inventory_items.append(":: bonus xp potion")
+                                inventory_items.append("<:xppotion:1245417682199646290> bonus xp potion")
                                 player.Money = int(player.Money - xpprice)
-                                em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description=f"{interaction.user.mention} bought a **:: bonus xp potion.**\n \nYour balance: **{player.Money}$**\n*— {xpprice}$*", color= green)
+                                em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description=f"{interaction.user.mention} bought a **<:xppotion:1245417682199646290> bonus xp potion.**\n \nYour balance: **{player.Money}$**\n*— {xpprice}$*", color= green)
                                 await interaction.response.edit_message(embed= em, view=None)
                             else:
                                 moneyshort = int(xpprice - player.Money)
@@ -546,9 +586,9 @@ class ShopMenu(discord.ui.View):
                             tenxpprice = 675
                             if player.Money >= tenxpprice:
                                 for _ in range(10):
-                                    inventory_items.append(":: bonus xp potion")
+                                    inventory_items.append("<:xppotion:1245417682199646290> bonus xp potion")
                                 player.Money = int(player.Money - tenxpprice)
-                                em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description=f"{interaction.user.mention} bought 10 **:: bonus xp potions.**\n \nYour balance: **{player.Money}$**\n*— {tenxpprice}$*", color= green)
+                                em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description=f"{interaction.user.mention} bought 10 **<:xppotion:1245417682199646290> bonus xp potions.**\n \nYour balance: **{player.Money}$**\n*— {tenxpprice}$*", color= green)
                                 await interaction.response.edit_message(embed= em, view=None)
                             else:
                                 moneyshort = int(tenxpprice - player.Money)
@@ -557,9 +597,9 @@ class ShopMenu(discord.ui.View):
                         elif potionbuymsg in ["buy bonusgold", "buy bonus gold potion", "buy gold potion", "buy bonusgoldpotion", "buy bonusgold potion"]:
                             goldprice = 80
                             if player.Money >= goldprice:
-                                inventory_items.append(":: bonus gold potion")
+                                inventory_items.append("<:goldpotion:1245417684661702730> bonus gold potion")
                                 player.Money = int(player.Money - goldprice)
-                                em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description=f"{interaction.user.mention} bought a **:: bonus gold potion.**\n \nYour balance: **{player.Money}$**\n*— {goldprice}$*", color= green)
+                                em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description=f"{interaction.user.mention} bought a **<:goldpotion:1245417684661702730> bonus gold potion.**\n \nYour balance: **{player.Money}$**\n*— {goldprice}$*", color= green)
                                 await interaction.response.edit_message(embed= em, view=None)
                             else:
                                 moneyshort = int(goldprice - player.Money)
@@ -569,9 +609,9 @@ class ShopMenu(discord.ui.View):
                             tengoldprice = 675
                             if player.Money >= tengoldprice:
                                 for _ in range(10):
-                                    inventory_items.append(":: bonus gold potion")
+                                    inventory_items.append("<:goldpotion:1245417684661702730> bonus gold potion")
                                 player.Money = int(player.Money - tengoldprice)
-                                em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description=f"{interaction.user.mention} bought 10 **:: bonus gold potions.**\n \nYour balance: **{player.Money}$**\n*— {tengoldprice}$*", color= green)
+                                em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description=f"{interaction.user.mention} bought 10 **<:goldpotion:1245417684661702730> bonus gold potions.**\n \nYour balance: **{player.Money}$**\n*— {tengoldprice}$*", color= green)
                                 await interaction.response.edit_message(embed= em, view=None)
                             else:
                                 moneyshort = int(tengoldprice - player.Money)
@@ -594,10 +634,84 @@ class ShopMenu(discord.ui.View):
         except asyncio.TimeoutError:
             await interaction.followup.send(discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description= f"{interaction.user.mention} did not want to buy anything.", color= vividpink), ephemeral=True)
 
-    @discord.ui.button(label= "Titles", style=discord.ButtonStyle.green)
+    @discord.ui.button(label= "Titles", style=discord.ButtonStyle.blurple)
     async def titlebuybutton(self, interaction: discord.Interaction, Button: discord.ui.Button):
-        em = discord.Embed(title= "**:shopping_cart: CHARMING SHOP - Titles :identification_card:**", description = f"{interaction.user.mention} here is the offer:\n- :dog: *Dog* - **300$**\n- :cat: *Cat* - **300$**\nYour balance: **{player.Money}$**", color = vividpink)
+        em = discord.Embed(
+    title="**:shopping_cart: CHARMING SHOP - Titles :identification_card:**",
+    description=(
+        f"{interaction.user.mention} here are the obtainable titles:\n\n"
+        "- title 1 - :baby_bottle: *Novice* - **0$**\n"
+        "- title 2 - :loudspeaker: *Dummy* - **150$**\n"
+        "- title 3 - :adhesive_bandage: *Rogue* - **300$**\n"
+        "- title 4 - :dash: *Goofy* - **300$**\n"
+        "- title 5 - :archery: *Precise Hunter* - **500$**\n"
+        "- title 6 - :briefcase: *Workaholic* - **600$**\n"
+        "- title 7 - :milky_way: *Wanderer* - **950$**\n"
+        "- title 8 - :wing: *Guardian Angel* - **1000$**\n"
+        "- title 9 - :drum: *Memelord* - **1069$**\n"
+        "- title 10 - :wine_glass: *Gourmet* - **2000$**\n"
+        "- title 11 - :sunglasses: *Smart Head* - **2700$**\n"
+        "- title 12 - :alien: *Sus* - **2900$**\n"
+        "- title 13 - :crystal_ball: *Pathfinder* - **3000$**\n"
+        "- title 14 - :chains: *Deadly Warden* - **4020$**\n"
+        "- title 15 - :ocean: *Balanced* - **8888$**\n"
+        "- title 16 - :cloud: *Assasin* - **8900$**\n"
+        "- title 17 - :glowing_star: *Star Seeker* - **9200$**\n"
+        "- title 18 - :fire: *Ember Warrior* - **9999$**\n"
+        "- title 19 - :comet: *Dynamic* - **10500$**\n"
+        "- title 20 - :knife: *Blade Dancer* - **12000$**\n"
+        "- title 21 - :leaves: *Nature's Child* - **13200$**\n"
+        "- title 22 - :cloud_tornado: *Phantom* - **15000$**\n"
+        "- title 23 - :zap: *Master of Lightning* - **17770$**\n"
+        "- title 24 - :crown: *Eternal Champion* - **20500$**\n"
+        "- title 25 - :mount_fuji: *The Almighty* - **30000$**\n\n"
+        ":warning: To buy a potion, type ***buy title number*** in chat\n"
+        ":warning: If you buy a title, your current one will be overwritten"), color=vividpink)
         await interaction.response.edit_message(embed= em)
+
+        def check_message(m):
+            return m.author == interaction.user and m.channel == interaction.channel
+        try:
+            msg = await client.wait_for("message", check=check_message, timeout= None)
+            titlebuymsg = msg.content.lower()
+            global player
+
+
+            if player:
+                class PotionShopMenu(discord.ui.View):
+                    def __init__(self):
+                        super().__init__(timeout = None)
+
+                    @discord.ui.button(label="Confirm", style=discord.ButtonStyle.green)
+                    async def confirmbutton(self, interaction: discord.Interaction, button: discord.ui.Button):
+
+                        if potionbuymsg in ["buy healing", "buy healing potion", "buy heal potion"]:
+                            healprice = 5
+                            if player.Money >= healprice:
+                                inventory_items.append(":: heal potion")
+                                player.Money = int(player.Money - healprice)
+                                em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Titles :identification_card:**", description=f"{interaction.user.mention} bought a **:: healing potion.**\n \nYour balance: **{player.Money}$**\n*— {healprice}$*", color= green)
+                                await interaction.response.edit_message(embed= em, view=None)
+                            else:
+                                moneyshort = int(healprice - player.Money)
+                                await interaction.followup.send(discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description=f"{interaction.user.mention}, you don't have enough money for **healing potion** :(\n\nYour balance: **{player.Money}$**\nYou are *{moneyshort}$* short!", color=red))
+                                return
+                        
+                    @discord.ui.button(label= "Cancel", style=discord.ButtonStyle.red)
+                    async def cancelbutton(self, interaction: discord.Interaction, button: discord.ui.Button):
+                        global player
+                        em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description= f"{interaction.user.mention} did not buy a potion.", color= vividpink)
+                        await interaction.response.edit_message(embed=em, view=None)
+
+                if potionbuymsg in ["buy healing", "buy healing potion", "buy heal potion", "buy healing 10", "buy healing potion 10", "buy heal potion 10", "buy healpotion 10", "buy healingpotion 10", "buy xp", "buy xp potion", "buy xppotion", "buy bonus xp", "buy bonusxp", "buy bonus xp potion", "buy bonusxppotion", "buy xp 10", "buy xp potion 10", "buy xppotion 10", "buy bonus xp 10", "buy bonusxp 10", "buy bonus xp potion 10", "buy bonusxppotion 10", "buy bonusgold", "buy bonus gold potion", "buy gold potion", "buy bonusgoldpotion", "buy bonusgold potion", "buy bonusgold 10", "buy bonus gold potion 10", "buy gold potion 10", "buy bonusgold potion 10", "buy bonusgoldpotion 10"]:
+                    em = discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description= f"{interaction.user.mention}, are you sure you want to buy **{potion}**?", color= vividpink)
+                    await interaction.followup.send(embed= em, view=PotionShopMenu())
+                else:
+                    em = (discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description="Invalid potion. Please try again.", color= vividpink))
+                    await interaction.followup.send(embed= em)
+
+        except asyncio.TimeoutError:
+            await interaction.followup.send(discord.Embed(title="**:shopping_cart: CHARMING SHOP - Potions :test_tube:**", description= f"{interaction.user.mention} did not want to buy anything.", color= vividpink), ephemeral=True)
 
 # PULL
 # @client.tree.command(name= "pull", description= "Pulls an artifact for 1500$.")

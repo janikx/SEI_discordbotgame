@@ -859,7 +859,7 @@ class PetMenu(discord.ui.View):
             pet_name = f"{pet.Type}"
         else:
             pet_name = f":{pet.Type}: {pet.Name}"
-        em = discord.Embed(title= "Pet info", description= f"**{interaction.user.mention}'s companion**\n \nName: **{pet_name}**\nHappiness: **{pet.Happiness} / 100**", color = 15844367)
+        em = discord.Embed(title= "Pet info", description= f"**{interaction.user.mention}'s companion**\n \nName: **{pet_name}**\nHappiness: **{pet.Happiness} / 100**", color = yellow)
         await interaction.response.edit_message(embed= em)
 
 @client.tree.command(name= "petmenu", description= "Menu to check up on your sweet pet.")

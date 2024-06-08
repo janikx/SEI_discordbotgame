@@ -1,9 +1,4 @@
-# WHAT TO DO:
-# • commands z papiera
 # • znamka: 1) ZA KOD 2) DOKUMENTACIA / PREZENTACIA - aku kniznicu sme pouzili, ako sme postupovali, skadial je co, co to robi, atd.
-
-# spravim class USER, potom spravim tam atributy, potom artefakt atributy, potom vytvorim USERA a jeho full atk (scitanie) atd., potom if artifact quality = gold atd. tak podla toho priradim artifact atk bonus atd.
-# equip artefaktu = vymazat list a potom dosadit novy artefakt
 
 # COLORS
 red = 15548997
@@ -75,18 +70,16 @@ class Pet:
         self.Happiness = happiness
 
 # PLAYER AND PET
-player = User(30, 30, 10, 620, 1, 0, 50, True, "no title", 1.5, 1, 0, 0)
+player = User(30, 30, 10, 620, 1, 0, 50, False, "no title", 1.5, 1, 0, 0)
 pet = Pet("Cat", "cat", 550, 100)
 
 # START
 @client.tree.command(name="start", description="Use START to play the game.")
 async def start(interaction: discord.Interaction):
-    em = discord.Embed(title= "Welcome to Charming RPG!", description= "Your adventure starts now. You can use /commands for a list of commands. Have fun!", color= pink, timestamp=datetime.datetime.utcnow())
+    em = discord.Embed(title= "Welcome to Charming RPG!", description= f"Hello {interaction.user.mention}, the traveller, your adventure starts now. You can use **/commands** for a list of commands. Have fun!", color= pink, timestamp=datetime.datetime.utcnow())
     em.set_thumbnail(url= interaction.user.avatar)
     player.registered = True
-    joined_the_game_time = datetime.datetime.utcnow()
     await interaction.response.send_message(embed= em)
-    return joined_the_game_time
 
 chicken = Pet("Chicken", "chicken", 300, 100)
 duck = Pet("Duck", "duck", 350, 100)
@@ -145,12 +138,16 @@ async def on_ready():
 # HELP
 @client.tree.command(name= "commands", description="Shows a list of all avaiable COMMANDS.")
 async def commands(interaction: discord.Interaction):
-    em= discord.Embed(title= "Charming RPG - Commands", description= f"{interaction.user.mention} here's the list of commands!", color= pink)
-    em.add_field(name="Info :mag:", value="/userinfo /inventory - use, sell", inline=False)
-    em.add_field(name="Action :pick:", value="/action - chop, mine, hunt", inline=False)
-    em.add_field(name="Shop :shopping_cart:", value="/shop - pets, potions, titles", inline=False)
-    em.add_field(name="Help :helmet_with_cross:", value="/commands /start", inline=False)
-    await interaction.response.send_message(embed= em, ephemeral= True)
+    if player.registered == True:
+        em= discord.Embed(title= "Charming RPG - Commands", description= f"{interaction.user.mention} here's the list of commands!", color= pink)
+        em.add_field(name="Info :mag:", value="/userinfo /inventory - use, sell", inline=False)
+        em.add_field(name="Action :pick:", value="/action - chop, mine, hunt", inline=False)
+        em.add_field(name="Shop :shopping_cart:", value="/shop - pets, potions, titles", inline=False)
+        em.add_field(name="Help :helmet_with_cross:", value="/commands /start", inline=False)
+        await interaction.response.send_message(embed= em, ephemeral= True)
+    else:
+        em = discord.Embed(title= "Registration required!", description= f"Hi {interaction.user.mention}, you can't use this command, because you are not registered yet. Use **/start** command to register!", color= red, timestamp=datetime.datetime.utcnow())
+        await interaction.response.send_message(embed= em)
 
 # LIST OF NEEDED VARIABLES
 # MINE
@@ -301,47 +298,59 @@ class InventoryMenu(discord.ui.View):
 
 @client.tree.command(name= "inventory", description= "Shows inventory of a player.")
 async def inventory(interaction: discord.Interaction):
-    if len(inventory_items) == 0 and len(inventory_mineitems) == 0 and len(inventory_chopitems) == 0:
-        em = discord.Embed(title= "Your inventory", description= f"No items.\n\nYour balance: **{player.Money}$**", color = darkgreen)
+    if player.registered == True:
+        if len(inventory_items) == 0 and len(inventory_mineitems) == 0 and len(inventory_chopitems) == 0:
+            em = discord.Embed(title= "Your inventory", description= f"No items.\n\nYour balance: **{player.Money}$**", color = darkgreen)
+        else:
+            counter_items = Counter(inventory_items)
+            inventory_items_dict = dict(counter_items)
+
+            counter_mineitems = Counter(inventory_mineitems)
+            mine_items_dict = dict(counter_mineitems)
+
+            counter_chopitems = Counter(inventory_chopitems)
+            chop_items_dict = dict(counter_chopitems)
+
+            em = discord.Embed(title= "Your inventory", description= f"\n{interaction.user.mention}'s balance: **{player.Money}$**", color = darkgreen)
+            em.add_field(name= "Items :backpack:", value= "\n".join([f"{count}x {item}" for item, count in counter_items.items()]), inline= False)
+            em.add_field(name= "Mined Items :pick:", value= "\n".join([f"{count}x {item}" for item, count in counter_mineitems.items()]), inline= False)
+            em.add_field(name= "Chopped Items :axe:", value= "\n".join([f"{count}x {item}" for item, count in counter_chopitems.items()]), inline= False)
+        await interaction.response.send_message(embed= em, view= InventoryMenu())
     else:
-        counter_items = Counter(inventory_items)
-        inventory_items_dict = dict(counter_items)
-
-        counter_mineitems = Counter(inventory_mineitems)
-        mine_items_dict = dict(counter_mineitems)
-
-        counter_chopitems = Counter(inventory_chopitems)
-        chop_items_dict = dict(counter_chopitems)
-
-        em = discord.Embed(title= "Your inventory", description= f"\n{interaction.user.mention}'s balance: **{player.Money}$**", color = darkgreen)
-        em.add_field(name= "Items :backpack:", value= "\n".join([f"{count}x {item}" for item, count in counter_items.items()]), inline= False)
-        em.add_field(name= "Mined Items :pick:", value= "\n".join([f"{count}x {item}" for item, count in counter_mineitems.items()]), inline= False)
-        em.add_field(name= "Chopped Items :axe:", value= "\n".join([f"{count}x {item}" for item, count in counter_chopitems.items()]), inline= False)
-    await interaction.response.send_message(embed= em, view= InventoryMenu())
+        em = discord.Embed(title= "Registration required!", description= f"Hi {interaction.user.mention}, you can't use this command, because you are not registered yet. Use **/start** command to register!", color= red, timestamp=datetime.datetime.utcnow())
+        await interaction.response.send_message(embed= em)
 
 # USERINFO
 @client.tree.command(name="userinfo", description="Shows information about any user.")
 async def userinfo(interaction: discord.Interaction, member: discord.Member= None):
-    if member == None:
-        member = interaction.user
-    em = discord.Embed(title= "User Info", description= f":bust_in_silhouette: Here is the user info for user {member.name}", color= discord.Color.pink(), timestamp= datetime.datetime.utcnow())
-    em.set_thumbnail(url= member.avatar)
-    em.add_field(name= "Info :mag:", value= f"- Name: **{member.mention}**\n- Title: **{player.Title}**\nID: *{member.id}*", inline= False)
-    em.add_field(name= "Game status :video_game:", value= f":hearts: HP: **{player.HP}/{player.MaxHP}**\n:money_with_wings: Balance: **{player.Money}$**\n:chart_with_upwards_trend: Level: **{player.Lvl}**\nXP: **{player.XP} / {player.LvlUpXP} xp**")
-    if pet.Type == "-":
-        pet_type = f"{pet.Type}"
+    if player.registered == True:
+        if member == None:
+            member = interaction.user
+        em = discord.Embed(title= "User Info", description= f":bust_in_silhouette: Here is the user info for user {member.name}", color= discord.Color.pink(), timestamp= datetime.datetime.utcnow())
+        em.set_thumbnail(url= member.avatar)
+        em.add_field(name= "Info :mag:", value= f"- Name: **{member.mention}**\n- Title: **{player.Title}**\nID: *{member.id}*", inline= False)
+        em.add_field(name= "Game status :video_game:", value= f":hearts: HP: **{player.HP}/{player.MaxHP}**\n:money_with_wings: Balance: **{player.Money}$**\n:chart_with_upwards_trend: Level: **{player.Lvl}**\nXP: **{player.XP} / {player.LvlUpXP} xp**")
+        if pet.Type == "-":
+            pet_type = f"{pet.Type}"
+        else:
+            pet_type = f":{pet.Type}: {pet.Type}"
+        em.add_field(name= "Pet :paw_prints:", value= f"Name: **{pet.Name}**\nType: *{pet_type}*\nHappiness: *{pet.Happiness} / 100*")
+        await interaction.response.send_message(embed= em)
     else:
-        pet_type = f":{pet.Type}: {pet.Type}"
-    em.add_field(name= "Pet :paw_prints:", value= f"Name: **{pet.Name}**\nType: *{pet_type}*\nHappiness: *{pet.Happiness} / 100*")
-    await interaction.response.send_message(embed= em)
+        em = discord.Embed(title= "Registration required!", description= f"Hi {interaction.user.mention}, you can't use this command, because you are not registered yet. Use **/start** command to register!", color= red, timestamp=datetime.datetime.utcnow())
+        await interaction.response.send_message(embed= em)
 
 # DAILY n' WEEKLY
 @client.tree.command(name="daily", description="Claim a reward every 24h.")
 @app_commands.checks.cooldown(1, 86400)
 async def daily(interaction: discord.Interaction):
-    player.Money += 100
-    em = discord.Embed(title= "Daily reward :money_with_wings:", description= f"{interaction.user.mention} claimed their daily **100$**!", color = purple)
-    await interaction.response.send_message(embed= em)
+    if player.registered == True:
+        player.Money += 100
+        em = discord.Embed(title= "Daily reward :money_with_wings:", description= f"{interaction.user.mention} claimed their daily **100$**!", color = purple)
+        await interaction.response.send_message(embed= em)
+    else:
+        em = discord.Embed(title= "Registration required!", description= f"Hi {interaction.user.mention}, you can't use this command, because you are not registered yet. Use **/start** command to register!", color= red, timestamp=datetime.datetime.utcnow())
+        await interaction.response.send_message(embed= em)
 
 @daily.error
 async def actionmenu_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
@@ -352,9 +361,13 @@ async def actionmenu_error(interaction: discord.Interaction, error: app_commands
 @client.tree.command(name="weekly", description="Claim a reward every-week.")
 @app_commands.checks.cooldown(1, 604800)
 async def weekly(interaction: discord.Interaction):
-    player.Money += 1000
-    em = discord.Embed(title= "Weekly reward :money_with_wings:", description= f"{interaction.user.mention} claimed their weekly **1000$**!", color = purple)
-    await interaction.response.send_message(embed= em)
+    if player.registered == True:
+        player.Money += 1000
+        em = discord.Embed(title= "Weekly reward :money_with_wings:", description= f"{interaction.user.mention} claimed their weekly **1000$**!", color = purple)
+        await interaction.response.send_message(embed= em)
+    else:
+        em = discord.Embed(title= "Registration required!", description= f"Hi {interaction.user.mention}, you can't use this command, because you are not registered yet. Use **/start** command to register!", color= red, timestamp=datetime.datetime.utcnow())
+        await interaction.response.send_message(embed= em)
 
 @weekly.error
 async def actionmenu_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
@@ -576,12 +589,16 @@ class ActionMenu(discord.ui.View):
             inventory_items.remove("<:healpotion:1245417680903733249> healing potion")
             await interaction.response.edit_message(embed= em)
 
-@client.tree.command(name= "action", description= "Menu to do perform an ACTION")
-async def actionmenu(interaction: discord.Interaction):
-    em = discord.Embed(title= "Action", description= f"{interaction.user.mention}, what action do you want to make?", color = darkaqua)
-    await interaction.response.send_message(embed= em, view= ActionMenu())
-
+@client.tree.command(name= "action", description= "Menu to do perform an action.")
 @app_commands.checks.cooldown(1, 5.0)
+async def actionmenu(interaction: discord.Interaction):
+    if player.registered == True:
+        em = discord.Embed(title= "Action", description= f"{interaction.user.mention}, what action do you want to make?", color = darkaqua)
+        await interaction.response.send_message(embed= em, view= ActionMenu())
+    else:
+        em = discord.Embed(title= "Registration required!", description= f"Hi {interaction.user.mention}, you can't use this command, because you are not registered yet. Use **/start** command to register!", color= red, timestamp=datetime.datetime.utcnow())
+        await interaction.response.send_message(embed= em)
+
 @actionmenu.error
 async def actionmenu_error(interaction: discord.Interaction, error: app_commands.AppCommandError):
     retry_after = FormatTime(error.retry_after)
@@ -984,8 +1001,12 @@ class ShopMenu(discord.ui.View):
 
 @client.tree.command(name= "shop", description= "CHARMING SHOP.")
 async def actionmenu(interaction: discord.Interaction):
-    em = discord.Embed(title= ":shopping_cart: Welcome to *the* **CHARMING SHOP**:sparkles:", description= f"{interaction.user.mention}, what are you looking for?", color = vividpink)
-    await interaction.response.send_message(embed= em, view= ShopMenu())
+    if player.registered == True:
+        em = discord.Embed(title= ":shopping_cart: Welcome to *the* **CHARMING SHOP**:sparkles:", description= f"{interaction.user.mention}, what are you looking for?", color = vividpink)
+        await interaction.response.send_message(embed= em, view= ShopMenu())
+    else:
+        em = discord.Embed(title= "Registration required!", description= f"Hi {interaction.user.mention}, you can't use this command, because you are not registered yet. Use **/start** command to register!", color= red, timestamp=datetime.datetime.utcnow())
+        await interaction.response.send_message(embed= em)
 
 # PETMENU
 class PetMenu(discord.ui.View):
@@ -1069,11 +1090,15 @@ class PetMenu(discord.ui.View):
 
 @client.tree.command(name= "petmenu", description= "Menu to check up on your sweet pet.")
 async def petmenu(interaction: discord.Interaction):
-    if pet.Type == "-":
-        pet_type = f"{pet.Type}"
+    if player.registered == True:
+        if pet.Type == "-":
+            pet_type = f"{pet.Type}"
+        else:
+            pet_type = f":{pet.Type}: {pet.Name}"
+        em = discord.Embed(title= "Pet info", description= f"**{interaction.user.mention}'s companion**\n \nName: **{pet_type}**\nHappiness: **{pet.Happiness} / 100**", color = yellow)
+        await interaction.response.send_message(embed= em, view= PetMenu())
     else:
-        pet_type = f":{pet.Type}: {pet.Name}"
-    em = discord.Embed(title= "Pet info", description= f"**{interaction.user.mention}'s companion**\n \nName: **{pet_type}**\nHappiness: **{pet.Happiness} / 100**", color = yellow)
-    await interaction.response.send_message(embed= em, view= PetMenu())
+        em = discord.Embed(title= "Registration required!", description= f"Hi {interaction.user.mention}, you can't use this command, because you are not registered yet. Use **/start** command to register!", color= red, timestamp=datetime.datetime.utcnow())
+        await interaction.response.send_message(embed= em)
 
 client.run(DISCORD_TOKEN)

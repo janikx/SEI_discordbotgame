@@ -36,3 +36,6 @@ artifacts_inv = []
 #     em.add_field(name="ATK", value= f"{ATK}", inline=True)
 #     em.add_field(name="Quality", value= f"{current_artifact_quality}", inline=True)
 #     await interaction.response.send_message(embed= em)
+
+# spravim class USER, potom spravim tam atributy, potom artefakt atributy, potom vytvorim USERA a jeho full atk (scitanie) atd., potom if artifact quality = gold atd. tak podla toho priradim artifact atk bonus atd.
+# equip artefaktu = vymazat list a potom dosadit novy artefakt

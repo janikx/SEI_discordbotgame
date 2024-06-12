@@ -1,0 +1,58 @@
+{
+    "mine_materials": [
+      "<:rrock:1245417668534599790> rock",
+      "<:diorite:1245418611099828224> diorite",
+      "<:dirt:1245417662184689726> dirt",
+      "<:iron:1245417676382404649> iron",
+      "<:coal:1245417659512782970> coal",
+      "<:copper:1245417677971918943> copper",
+      "<:granite:1245419034128810005> granite",
+      "<:chalk:1245417670136823848> chalk"
+    ],
+    "rare_mine_materials": [
+      ":gem: diamond"
+    ],
+    "chop_materials": [
+      ":wood: wood",
+      ":herb: stick",
+      ":leaves: leaf",
+      ":green_apple: apple"
+    ],
+    "rare_chop_materials": [
+      ":apple: magic apple"
+    ],
+    "plants": [
+      "tulip",
+      "dandelion",
+      "rose",
+      "buttercup",
+      "camellia",
+      "columbine",
+      "dahlia"
+    ],
+    "rare_plants": [
+      "fire lily",
+      "orchid",
+      "jade vine"
+    ],
+    "enemies": [
+      ":zombie: zombie",
+      ":skull: skeleton",
+      ":spider: spider",
+      ":ghost: ghost",
+      ":vampire: vampire",
+      ":man_mage: witch",
+      ":supervillain: supervillain",
+      ":ogre: demon",
+      ":troll: troll",
+      ":genie: bad genie",
+      ":mermaid: evil mermaid",
+      ":t_rex: t-rex"
+    ],
+    "boss_enemies": [
+      "Titan",
+      "Dragon",
+      "Ancient robot",
+      "Serpent"
+    ]
+  }  

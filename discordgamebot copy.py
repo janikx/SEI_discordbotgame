@@ -22,7 +22,7 @@ from discord.ui.view import ViewStore
 from discord.components import Button, ButtonStyle
 from collections import Counter
 
-DISCORD_TOKEN = ("MTE5OTc3MTMyNTgyNTI4NjE3NA.G8qfnM.gY7c03PU4xyBG03bmfuKJd9sWG-rYh-l-GZhiQ")
+DISCORD_TOKEN = (" ")
 client = commands.Bot(command_prefix=".", intents= discord.Intents.all())
 
 class User:

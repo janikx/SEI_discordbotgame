@@ -1,5 +1,3 @@
-# • znamka: 1) ZA KOD 2) DOKUMENTACIA / PREZENTACIA - aku kniznicu sme pouzili, ako sme postupovali, skadial je co, co to robi, atd.
-
 # COLORS
 red = 15548997
 darkgreen = 1146986
